@@ -1,0 +1,8 @@
+CTkToolTip==0.8
+customtkinter==5.2.2
+ffmpeg_python==0.2.0
+opencv_python==4.11.0.86
+Pillow==11.2.1
+pygifsicle==1.1.0
+pymediainfo==7.0.1
+
