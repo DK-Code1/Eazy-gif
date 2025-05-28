@@ -2,6 +2,13 @@
 Eazy-gif is my attempt to recreate Ezgif into a standalone software so we can create and modify GIFS files entirely within our systems.
 It is a multi platform software to convert video files into gifs files
 
+#
+
+![Guide image](https://github.com/DK-Code1/Eazy-gif/blob/main/guide.gif)
+-----
+![Sample gif](https://github.com/DK-Code1/Eazy-gif/blob/main/sample.gif)
+#
+
 # Features
 - Multi-platform support (Windows and linux [arch, ubuntu] tested, OSX untested)
 - Create GIFs.
