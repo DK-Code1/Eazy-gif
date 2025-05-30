@@ -20,13 +20,17 @@ It is a multi platform software to convert video files into gifs files
 # Requirements
 - MPV libraries.
 - FFMPEG binaries.
-- Releases already come with mpv and ffmpeg (For Windows users).
-- Linux users only need to install MPV as it comes ffmpeg automatically.
+
+Releases already come with mpv and ffmpeg (For Windows users).
+
+If you are not using release version, you can easily download ffmpeg and mpv library at [jeremylee.sh](https://jeremylee.sh/bins/) (ffmpeg.exe, mpv-2.dll), you can place them in the same working directory.
+
+Linux users only need to install MPV as it comes ffmpeg automatically.
 
 # This app uses
-- Tkinter with customtkinter for GUI.
-- MPV for video playing and preview with mpv-python implementation.
-- ffmpeg-python wrapper for ffmpeg, to convert process videos and gifs.
+- Tkinter with [customtkinter](https://github.com/TomSchimansky/CustomTkinter) for GUI.
+- MPV for video playing and preview with [mpv-python](https://github.com/jaseg/python-mpv) implementation.
+- [ffmpeg-python](https://github.com/kkroening/ffmpeg-python) wrapper for ffmpeg, to convert process videos and gifs.
 - Mediainfo (File info).
 - Opencv2 (File info).
 
