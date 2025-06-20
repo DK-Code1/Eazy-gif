@@ -27,6 +27,7 @@ class videosettings(ctk.CTkToplevel):
         self.audio_track = ctk.IntVar(value=0)
         self.volume_db = ctk.IntVar(value=0)
         self.crf = ctk.IntVar(value = 23)
+        self.max_size = ctk.IntVar(value = 0)
 
 
         self.options_frame = ctk.CTkFrame(self)
@@ -62,14 +63,21 @@ class videosettings(ctk.CTkToplevel):
         self.crf_frame= ctk.CTkFrame(self.options_frame)
         self.crf_label = ctk.CTkLabel(self.crf_frame, text="Crf (quality): ")
         self.crf_entry = ctk.CTkEntry(self.crf_frame, textvariable=self.crf)
-        self.tooltip_crf = CTkToolTip(self.crf_entry, message="Crf determines the quality of the video (bitrate), for mp4/mkv crf 16-18 is almost lossless, crf 20-22 is high quality with good file size, higher values deliver worse quality but lower file size" \
+        self.tooltip_crf = CTkToolTip(self.crf_entry, message="Crf determines the quality of the video (bitrate), for mp4/mkv crf 17-18 is almost lossless, crf 20-22 is high quality with good file size, higher values deliver worse quality but lower file size" \
         "\n for webm with vp9 codec: 20-24 is lossless, 26 is high quality with good file size, higher values have worse quality but lower file size")
 
-        
         self.crf_label.pack(side= "left")
         self.crf_entry.pack(side= "left")
         self.crf_frame.pack(anchor="e")
 
+        self.maxsize_frame= ctk.CTkFrame(self.options_frame)
+        self.maxsize_label = ctk.CTkLabel(self.maxsize_frame, text="Max file size (MB): ")
+        self.maxsize_entry = ctk.CTkEntry(self.maxsize_frame, textvariable=self.max_size)
+        self.tooltip_maxisze = CTkToolTip(self.maxsize_entry, message="Set up a max file size (in MB) for the output, 0 is auto, default is 0.")
+
+        self.maxsize_label.pack(side= "left")
+        self.maxsize_entry.pack(side= "left")
+        self.maxsize_frame.pack(anchor="e")
 
 
         print([x["language"] for x in self.parent.audio_tracks])

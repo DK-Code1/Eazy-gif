@@ -257,7 +257,7 @@ class VideoTools:
 
     def toggle_idle(self, property_name, new):
 
-        print("toggled!")
+        #print("toggled!")
 
         self.is_idle = new
         
@@ -509,7 +509,7 @@ class VideoTools:
         
 
     def crop_handle_drag(self, event):
-        print(event)
+        #print(event)
         if self.crop_created and not self.crop_finished: ## Will work later
 
             player_frame_width = self.player_frame.winfo_width() ## Video width used to calculate position
@@ -519,7 +519,7 @@ class VideoTools:
             fixed_y = event.y if  event.y < player_frame_height else player_frame_height ## Don't allow crop go outside video frame
             fixed_x = event.x if  event.x < player_frame_width else player_frame_width
 
-            print(fixed_x, fixed_y)
+            #print(fixed_x, fixed_y)
 
 
             if fixed_y < self.crop_start[1]:
@@ -539,7 +539,7 @@ class VideoTools:
 
 
             else:
-                print("proceed anyways")
+                #print("proceed anyways")
                 coords = [self.crop_start[0], self.crop_start[1], fixed_x, fixed_y]
                 self.position_crop_borders(coords)
 
@@ -672,7 +672,7 @@ class VideoTools:
 
         if self.start > 0:
 
-            print("moving cut canvas")
+            #print("moving cut canvas")
 
             finish_cut = self.finish if self.finish != 0 else self.slider.get()
             
@@ -743,8 +743,13 @@ class VideoTools:
         volume = self.videosettings.volume_db.get()
         preset = self.videosettings.preset.get()
         crf = self.videosettings.crf.get()
+        maxsize = self.videosettings.max_size.get()
+
+        duration = self.frame_count / self.fps
 
         print(title, audio_track, volume)
+
+        
 
 
 
@@ -756,7 +761,7 @@ class VideoTools:
 
         #gifs.convert(self.video_path, output, size, crf,audio_track, volume,  title, preset ,start, end, crop)
 
-        threading.Thread(target= ffexports.convert, args=(self.video_path, output, size, crf,audio_track, volume,  title, preset ,start, end, crop, format)).start()
+        threading.Thread(target= ffexports.convert, args=(self.video_path, output, size, crf,audio_track, volume,  title, preset ,start, end, crop, format), kwargs={"video_duration": duration, "max_size": maxsize}).start()
 
 
     def cut_video(self):

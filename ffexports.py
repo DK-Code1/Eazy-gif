@@ -1,5 +1,6 @@
 import ffmpeg
 import textwrap
+from datetime import datetime
 
 
 # # Generate palette
@@ -17,7 +18,7 @@ import textwrap
 #     .output(output_file) \
 #     .run()
 
-# def output_gif(stream, output):
+# def output_lowres_gif(stream, output):
 #   split = (
 #     stream
 #     .filter('scale', 512, -1, flags='lanczos') # Scale width to 512px, retain aspect ratio
@@ -38,6 +39,10 @@ import textwrap
 #     .run()
 #   )
 
+def timestamp_to_seconds(number):
+    dt = datetime.strptime(number, "%H:%M:%S.%f")
+    return dt.hour * 3600 + dt.minute * 60 + dt.second + dt.microsecond / 1e6
+
 
 def output_video_cut(input, output, start_time, end_time):
 
@@ -48,7 +53,8 @@ def output_video_cut(input, output, start_time, end_time):
     ffmpeg.run(stream)
 
 
-def convert(input, output, video_size, crf,audio_track, volume, title, preset_,start_time, end_time, crop, format):
+
+def convert(input_file, output_file, video_size, crf,audio_track, volume, title, preset_,start_time, end_time, crop, format, video_duration = None, max_size = None):
 
     thecrop = crop
 
@@ -64,9 +70,15 @@ def convert(input, output, video_size, crf,audio_track, volume, title, preset_,s
     if format == "webm":
         corrected = preset_.split("=")[1]
         webm_preset = corrected
-    
 
-    stream = ffmpeg.input(input, ss= start_time, to=end_time)
+
+
+
+    stream = ffmpeg.input(input_file)
+
+    if timestamp_to_seconds(end_time) > 0:
+
+        stream = ffmpeg.input(input_file, ss= start_time, to=end_time)
 
     video = stream.video
 
@@ -77,29 +89,43 @@ def convert(input, output, video_size, crf,audio_track, volume, title, preset_,s
 
 
 
-
-
-
     #normalize_increment = volume_detect(input, start_time, end_time)
 
     audio = stream[f'a:{audio_track}']
-
     audio = audio.filter('aformat', channel_layouts='stereo')
-
     audio = audio.filter('volume', f'{volume}dB')
 
-    stream = ffmpeg.output(video,audio, output, acodec=audio_codec, audio_bitrate=audio_bitrate, vcodec = codec, preset=preset_, speed=webm_preset , crf=crf, pix_fmt="yuv420p" ,metadata= f'Title={title}').overwrite_output()
+    max_bitrate = 0
+
+    if max_size:
+        bitrate = int(((max_size * 8) / video_duration) * 1000)
+        bitrate = bitrate - 192 if audio_codec == "aac" else bitrate - 96  ## considering audio bitrate too
+        max_bitrate = bitrate
+    
+
+
+    if max_bitrate != 0:
+        stream = ffmpeg.output(video,audio, output_file, acodec=audio_codec, audio_bitrate=audio_bitrate, vcodec = codec, preset=preset_, speed=webm_preset, crf=crf, maxrate=str(max_bitrate) + "k", bufsize= str(max_bitrate) + "k", pix_fmt="yuv420p" ,metadata= f'Title={title}').overwrite_output()
+
+    else:
+        stream = ffmpeg.output(video,audio, output_file, acodec=audio_codec, audio_bitrate=audio_bitrate, vcodec = codec, preset=preset_, speed=webm_preset , crf=crf, pix_fmt="yuv420p" ,metadata= f'Title={title}').overwrite_output()
 
     print(stream.get_args())
 
     ffmpeg.run(stream)
 
 
-
-
-def convert_gif(input_file, output, start_time, end_time, input_text, size, crop, fps, speed):
+def convert_gif(input_file, output_file, start_time, end_time, input_text, size, crop, fps, speed):
     
-    stream = ffmpeg.input(input_file, ss=start_time, to=end_time)
+
+    
+
+    stream = ffmpeg.input(input_file)
+
+    if timestamp_to_seconds(end_time) > 0:
+        stream = ffmpeg.input(input_file, ss=start_time, to=end_time)
+
+
 
     #thetext = textwrap.fill(thetext, width=40)
 
@@ -131,7 +157,7 @@ def convert_gif(input_file, output, start_time, end_time, input_text, size, crop
     (
         ffmpeg
         .filter([split[1], palette], 'paletteuse', dither="bayer", bayer_scale=5)
-        .output(f'{output}.gif',)
+        .output(f'{output_file}.gif',)
         .overwrite_output()
         .run()
     )
